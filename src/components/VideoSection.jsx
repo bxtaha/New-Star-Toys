@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import { Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -41,7 +41,7 @@ const VideoSection = ({ eyebrow, title, description, src, poster, className }) =
             />
           ) : poster ? (
             <div className="relative aspect-video">
-              <Image src={poster} alt={title} fill sizes="100vw" className="object-cover" />
+              <SmartImage src={poster} alt={title} fill sizes="100vw" className="object-cover" />
               <div className="pointer-events-none absolute inset-0 grid place-items-center">
                 <div className="flex h-20 w-20 items-center justify-center rounded-full bg-secondary text-secondary-foreground shadow-xl ring-1 ring-border md:h-24 md:w-24">
                   <Play className="h-8 w-8 translate-x-0.5 md:h-10 md:w-10" />

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
 import {
   Award,
@@ -95,7 +95,7 @@ export default function AboutPage() {
       <main>
         <section className="relative pt-20">
           <div className="relative h-[60vh] min-h-[420px] w-full overflow-hidden">
-            <Image
+            <SmartImage
               src={heroImage}
               alt="YCNST plush toy manufacturing facility interior"
               fill
@@ -188,7 +188,7 @@ export default function AboutPage() {
               viewport={{ once: true }}
               className="overflow-hidden rounded-2xl shadow-xl"
             >
-              <Image
+              <SmartImage
                 src={heroPlush}
                 alt="YCNST design and craft team collaborating"
                 loading="lazy"
@@ -367,7 +367,7 @@ export default function AboutPage() {
               viewport={{ once: true }}
               className="overflow-hidden rounded-2xl shadow-xl"
             >
-              <Image
+              <SmartImage
                 src={qualityFactoryImg}
                 alt="YCNST eco-friendly production"
                 loading="lazy"
@@ -461,7 +461,7 @@ export default function AboutPage() {
                   className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-lg"
                 >
                   <div className="relative aspect-square overflow-hidden bg-muted">
-                    <Image
+                    <SmartImage
                       src={person.image}
                       alt={`${person.name} — ${person.role}`}
                       fill
@@ -517,7 +517,7 @@ export default function AboutPage() {
               viewport={{ once: true }}
               className="overflow-hidden rounded-2xl shadow-xl"
             >
-              <Image src={factoryImg} alt="YCNST production facility floor" loading="lazy" className="h-full w-full object-cover" />
+              <SmartImage src={factoryImg} alt="YCNST production facility floor" loading="lazy" className="h-full w-full object-cover" />
             </motion.div>
           </div>
         </section>

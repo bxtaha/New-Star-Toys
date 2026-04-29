@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
 import { useI18n } from "@/components/I18nProvider";
 import heroImg from "@/assets/hero-plush.png";
@@ -21,7 +21,7 @@ const HeroSection = ({ heroImageUrl, heroTitle, heroSubtitle }) => {
   return (
     <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
       <div className="absolute inset-0">
-        <Image
+        <SmartImage
           src={imageSource}
           alt="Premium plush toy manufacturing"
           className="w-full h-full object-cover"

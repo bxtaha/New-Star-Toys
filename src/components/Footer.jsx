@@ -1,7 +1,7 @@
 "use client";
 
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
 import { useI18n } from "@/components/I18nProvider";
 
@@ -33,7 +33,7 @@ const Footer = () => {
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
             <div>
               <Link href="/" className="mb-4 inline-flex">
-                <Image src="/logo-nev.png" alt="YCNST" width={196} height={56} className="h-12 w-auto" />
+                <SmartImage src="/logo-nev.png" alt="YCNST" width={196} height={56} className="h-12 w-auto" />
               </Link>
               <p className="mb-5 text-sm leading-relaxed text-gray-800">
                 {t("footer.companyLine1")}

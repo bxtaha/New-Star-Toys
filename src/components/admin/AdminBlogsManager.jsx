@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Loader2, MessageCircle, Pencil, Plus, Search, ThumbsUp, Trash2 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -247,7 +247,7 @@ const AdminBlogsManager = ({ initialBlogs }) => {
               const rowContent = (
                 <div className="grid grid-cols-[100px_1.4fr_0.9fr_120px_140px] gap-4 px-4 py-4">
                   <div className="relative h-20 overflow-hidden rounded-xl bg-muted/40">
-                    <Image
+                    <SmartImage
                       src={blog.coverImage || "/placeholder.svg"}
                       alt={blog.title?.en || "Blog"}
                       fill

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -18,7 +18,7 @@ const ProjectCard = ({ project, index }) => (
       className="group cursor-pointer"
     >
       <div className="relative mb-4 aspect-square overflow-hidden rounded-xl">
-        <Image
+        <SmartImage
           src={project.image}
           alt={project.title}
           fill

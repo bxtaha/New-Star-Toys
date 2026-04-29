@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Award, Globe, Users, Calendar } from "lucide-react";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import factoryImg from "@/assets/factory.jpg";
 import { useI18n } from "@/components/I18nProvider";
 
@@ -55,7 +55,7 @@ const AboutSection = () => {
             className="relative"
           >
             <div className="rounded-2xl overflow-hidden shadow-xl">
-              <Image
+              <SmartImage
                 src={factoryImg}
                 alt="YCNST manufacturing facility"
                 loading="lazy"

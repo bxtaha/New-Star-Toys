@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentAdmin } from "@/lib/server/auth";
 import { listMediaForAdmin, canDeleteMediaUrl } from "@/lib/server/media";
-import { deleteManagedUpload } from "@/lib/server/uploads";
+import { deleteMediaUrl } from "@/lib/server/uploads";
 
 function unauthorizedResponse() {
   return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
@@ -38,10 +38,9 @@ export async function DELETE(request) {
     if (!check.allowed) {
       return NextResponse.json({ error: check.used ? "This file is in use." : "Invalid media url." }, { status: 400 });
     }
-    await deleteManagedUpload(url);
+    await deleteMediaUrl(url);
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: error.message || "Unable to delete media." }, { status: 400 });
   }
 }
-

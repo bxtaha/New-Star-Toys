@@ -2,6 +2,7 @@ import path from "path";
 import { readdir, stat } from "fs/promises";
 import { connectToDatabase } from "@/lib/server/db";
 import { isManagedUploadUrl } from "@/lib/server/uploads";
+import { getCloudinaryConfig, isCloudinaryAssetUrl, isCloudinaryConfigured, listCloudinaryResources } from "@/lib/server/cloudinary";
 import { ensureContentSeeded } from "@/lib/server/content";
 import { Product } from "@/models/Product";
 import { Blog } from "@/models/Blog";
@@ -41,6 +42,10 @@ function kindForFileName(fileName) {
 function getUploadRoot() {
   const configured = trimValue(process.env.UPLOAD_STORAGE_DIR);
   return configured ? path.resolve(configured) : path.join(process.cwd(), "public", "uploads");
+}
+
+function isManagedMediaUrl(url) {
+  return isManagedUploadUrl(url) || isCloudinaryAssetUrl(url);
 }
 
 async function walkFiles(baseDir) {
@@ -87,12 +92,12 @@ async function collectUsedUrls() {
 
   for (const product of products || []) {
     const cover = trimValue(product?.coverImage);
-    if (isManagedUploadUrl(cover)) {
+    if (isManagedMediaUrl(cover)) {
       used.add(cover);
     }
     for (const media of product?.media || []) {
       const url = trimValue(media?.url);
-      if (isManagedUploadUrl(url)) {
+      if (isManagedMediaUrl(url)) {
         used.add(url);
       }
     }
@@ -100,30 +105,30 @@ async function collectUsedUrls() {
 
   for (const blog of blogs || []) {
     const cover = trimValue(blog?.coverImage);
-    if (isManagedUploadUrl(cover)) {
+    if (isManagedMediaUrl(cover)) {
       used.add(cover);
     }
   }
 
   if (settings) {
     const heroImageUrl = trimValue(settings?.heroImageUrl);
-    if (isManagedUploadUrl(heroImageUrl)) {
+    if (isManagedMediaUrl(heroImageUrl)) {
       used.add(heroImageUrl);
     }
     for (const hero of settings?.heroImages || []) {
       const url = trimValue(hero?.imageUrl || hero);
-      if (isManagedUploadUrl(url)) {
+      if (isManagedMediaUrl(url)) {
         used.add(url);
       }
     }
     for (const page of settings?.heroPages || []) {
       const imageUrl = trimValue(page?.imageUrl);
-      if (isManagedUploadUrl(imageUrl)) {
+      if (isManagedMediaUrl(imageUrl)) {
         used.add(imageUrl);
       }
       for (const urlValue of page?.images || []) {
         const url = trimValue(urlValue);
-        if (isManagedUploadUrl(url)) {
+        if (isManagedMediaUrl(url)) {
           used.add(url);
         }
       }
@@ -198,9 +203,69 @@ export async function listMediaForAdmin({
         bytes: info.size || 0,
         updatedAt: info.mtime ? info.mtime.toISOString() : null,
         used: isUsed,
+        provider: "local",
       });
     }),
   );
+
+  if (isCloudinaryConfigured()) {
+    const config = getCloudinaryConfig();
+    const rootFolder = trimValue(config?.rootFolder);
+    const prefix = rootFolder ? `${rootFolder}/` : "";
+
+    const [images, videos] = await Promise.all([
+      listCloudinaryResources({ prefix, resourceType: "image", maxResults: 500 }),
+      listCloudinaryResources({ prefix, resourceType: "video", maxResults: 500 }),
+    ]);
+
+    const all = [...images, ...videos];
+    for (const asset of all) {
+      const assetUrl = trimValue(asset.url);
+      if (!assetUrl) {
+        continue;
+      }
+
+      const fullFolder = trimValue(asset.folder);
+      const folderSegments = fullFolder.split("/").filter(Boolean);
+      const rootIndex = rootFolder ? folderSegments.indexOf(rootFolder) : -1;
+      const folderName = folderSegments[rootIndex >= 0 ? rootIndex + 1 : 0] || "";
+      const entitySlug = folderSegments[rootIndex >= 0 ? rootIndex + 2 : 1] || "";
+      const fileName = trimValue(asset.fileName) || trimValue(asset.publicId).split("/").pop() || "";
+      const detectedKind = asset.kind === "video" ? "video" : "image";
+
+      if (kindFilter && detectedKind !== kindFilter) {
+        continue;
+      }
+      if (folderFilter && folderName !== folderFilter) {
+        continue;
+      }
+
+      const searchable = [folderName, entitySlug, fileName, assetUrl, asset.publicId].filter(Boolean).join("/");
+      if (q && !searchable.toLowerCase().includes(q)) {
+        continue;
+      }
+
+      const isUsed = usedUrls.has(assetUrl);
+      if (statusFilter === "used" && !isUsed) {
+        continue;
+      }
+      if (statusFilter === "unused" && isUsed) {
+        continue;
+      }
+
+      items.push({
+        url: assetUrl,
+        kind: detectedKind,
+        folder: folderName,
+        entitySlug,
+        fileName,
+        bytes: Number(asset.bytes) || 0,
+        updatedAt: asset.updatedAt || null,
+        used: isUsed,
+        provider: "cloudinary",
+      });
+    }
+  }
 
   items.sort((a, b) => String(b.updatedAt || "").localeCompare(String(a.updatedAt || "")));
 
@@ -229,9 +294,8 @@ export async function listMediaForAdmin({
 export async function canDeleteMediaUrl(url) {
   const usedUrls = await collectUsedUrls();
   const normalized = trimValue(url);
-  if (!isManagedUploadUrl(normalized)) {
+  if (!isManagedMediaUrl(normalized)) {
     return { allowed: false, used: false };
   }
   return { allowed: !usedUrls.has(normalized), used: usedUrls.has(normalized) };
 }
-

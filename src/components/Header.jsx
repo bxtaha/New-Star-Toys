@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/components/I18nProvider";
 
@@ -101,7 +101,7 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-md border-b border-border">
       <div className="container flex items-center justify-between h-16 md:h-20">
         <Link href="/" className="font-heading font-bold text-lg md:text-xl tracking-tight text-primary">
-          <Image
+          <SmartImage
             src="/logo-nev.png"
             alt="YCNST"
             width={196}

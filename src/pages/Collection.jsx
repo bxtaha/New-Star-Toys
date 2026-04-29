@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import { motion } from "framer-motion";
 import { Filter, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -120,7 +120,7 @@ const CollectionPage = ({ products = [], categories = [], initialCategorySlug = 
       <Header />
 
       <div className="relative h-[45vh] min-h-[340px] overflow-hidden">
-        <Image
+        <SmartImage
           src={heroImage}
           alt="Our Collection"
           fill
@@ -212,7 +212,7 @@ const CollectionPage = ({ products = [], categories = [], initialCategorySlug = 
                     className="group overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:shadow-lg"
                   >
                     <div className="relative aspect-square overflow-hidden bg-muted/30">
-                      <Image
+                      <SmartImage
                         src={product.image}
                         alt={product.title}
                         fill

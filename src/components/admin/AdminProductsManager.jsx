@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -111,7 +111,7 @@ const AdminProductsManager = ({ initialProducts }) => {
               className="grid grid-cols-[100px_1.2fr_1fr_120px_140px] gap-4 border-b border-border px-4 py-4 last:border-b-0"
             >
               <div className="relative h-20 overflow-hidden rounded-xl bg-muted/40">
-                <Image
+                <SmartImage
                   src={product.coverImage || "/placeholder.svg"}
                   alt={product.title?.en || "Product"}
                   fill

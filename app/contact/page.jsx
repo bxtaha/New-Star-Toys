@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import {
   Mail,
   MapPin,
@@ -56,7 +56,7 @@ export default function ContactPage() {
       <main>
         <section className="relative pt-20">
           <div className="relative h-[60vh] min-h-[420px] w-full overflow-hidden">
-            <Image
+            <SmartImage
               src={heroImage}
               alt="YCNST welcoming office reception"
               fill

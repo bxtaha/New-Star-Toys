@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -151,7 +151,7 @@ const BlogDetailPage = ({ post, relatedPosts = [] }) => {
       <Header />
 
       <div className="relative h-[50vh] min-h-[400px] overflow-hidden">
-        <Image src={post.image} alt={post.title} fill priority sizes="100vw" className="h-full w-full object-cover" />
+        <SmartImage src={post.image} alt={post.title} fill priority sizes="100vw" className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-8 md:p-16">
           <div className="container">
@@ -194,7 +194,7 @@ const BlogDetailPage = ({ post, relatedPosts = [] }) => {
                     className="group flex gap-4 rounded-xl p-3 transition-colors hover:bg-muted/60"
                   >
                     <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg">
-                      <Image
+                      <SmartImage
                         src={related.image}
                         alt={related.title}
                         width={80}

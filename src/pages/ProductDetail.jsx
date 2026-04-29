@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowLeft, CheckCircle } from "lucide-react";
@@ -125,7 +125,7 @@ const ProductDetailPage = ({ product }) => {
                 {activeMedia?.kind === "video" ? (
                   <video src={activeMedia.url} controls className="h-full w-full object-cover" />
                 ) : (
-                  <Image
+                  <SmartImage
                     src={activeMedia?.url || product.coverImage}
                     alt={product.title}
                     className={`w-full h-full object-cover ${isZooming ? "" : "transition-transform duration-300"}`}
@@ -155,7 +155,7 @@ const ProductDetailPage = ({ product }) => {
                         </div>
                       ) : (
                         <div className="relative aspect-square">
-                          <Image src={item.url} alt={product.title} fill sizes="18vw" className="object-cover" />
+                          <SmartImage src={item.url} alt={product.title} fill sizes="18vw" className="object-cover" />
                         </div>
                       )}
                     </button>

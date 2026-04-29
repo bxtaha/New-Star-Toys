@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, Calendar } from "lucide-react";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
 import { useI18n } from "@/components/I18nProvider";
 
@@ -38,7 +38,7 @@ const BlogSection = ({ posts }) => {
               className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:shadow-lg"
             >
               <div className="relative aspect-[16/10] overflow-hidden">
-                <Image
+                <SmartImage
                   src={post.image}
                   alt={post.title}
                   fill

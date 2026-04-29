@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Calendar, Clock, Search } from "lucide-react";
@@ -39,7 +39,7 @@ export default function BlogsIndexPage({ hero, blogs, recentBlogs, categories, p
       <Header />
 
       <div className="relative h-[50vh] min-h-[400px] overflow-hidden pt-20">
-        <Image src={heroImageUrl} alt="YCNST Blog" fill priority sizes="100vw" className="h-full w-full object-cover" />
+        <SmartImage src={heroImageUrl} alt="YCNST Blog" fill priority sizes="100vw" className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-8 md:p-16">
           <div className="container">
@@ -93,7 +93,7 @@ export default function BlogsIndexPage({ hero, blogs, recentBlogs, categories, p
                     className="group flex gap-4 p-3 rounded-xl hover:bg-muted/60 transition-colors"
                   >
                     <div className="relative w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-muted">
-                      <Image
+                      <SmartImage
                         src={recent.coverImage}
                         alt={recent.title}
                         fill
@@ -134,7 +134,7 @@ export default function BlogsIndexPage({ hero, blogs, recentBlogs, categories, p
                       className="group grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-5 bg-card rounded-2xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300"
                     >
                       <div className="relative overflow-hidden aspect-[4/3] sm:aspect-auto sm:h-full bg-muted">
-                        <Image
+                        <SmartImage
                           src={post.coverImage}
                           alt={post.title}
                           fill
