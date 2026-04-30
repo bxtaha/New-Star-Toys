@@ -679,10 +679,19 @@ export async function getSiteSettings() {
 
   const normalized = normalizeHeroPages(settings);
   if (normalized.changed) {
-    await normalized.settings.save();
+    const patch = {
+      heroPages: normalized.settings.heroPages,
+      heroTitle: normalized.settings.heroTitle,
+      heroSubtitle: normalized.settings.heroSubtitle,
+      heroImageUrl: normalized.settings.heroImageUrl,
+      heroImages: normalized.settings.heroImages,
+    };
+    settings = (await SiteSettings.findOneAndUpdate({ key: SITE_SETTINGS_KEY }, { $set: patch }, { new: true })) || normalized.settings;
+  } else {
+    settings = normalized.settings;
   }
 
-  return serializeSiteSettings(normalized.settings);
+  return serializeSiteSettings(settings);
 }
 
 export async function updateSiteSettings(payload) {
@@ -744,7 +753,14 @@ export async function updateSiteSettings(payload) {
 
   const normalizedAfter = normalizeHeroPages(settings);
   settings = normalizedAfter.settings;
-  await settings.save();
+  const patch = {
+    heroPages: settings.heroPages,
+    heroTitle: settings.heroTitle,
+    heroSubtitle: settings.heroSubtitle,
+    heroImageUrl: settings.heroImageUrl,
+    heroImages: settings.heroImages,
+  };
+  settings = (await SiteSettings.findOneAndUpdate({ key: SITE_SETTINGS_KEY }, { $set: patch }, { new: true })) || settings;
 
   if (removeHeroImageUrl && isManagedUploadUrl(removeHeroImageUrl)) {
     await deleteManagedUpload(removeHeroImageUrl);
