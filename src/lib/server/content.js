@@ -686,7 +686,12 @@ export async function getSiteSettings() {
       heroImageUrl: normalized.settings.heroImageUrl,
       heroImages: normalized.settings.heroImages,
     };
-    settings = (await SiteSettings.findOneAndUpdate({ key: SITE_SETTINGS_KEY }, { $set: patch }, { new: true })) || normalized.settings;
+    settings =
+      (await SiteSettings.findOneAndUpdate(
+        { key: SITE_SETTINGS_KEY },
+        { $set: patch },
+        { returnDocument: "after" },
+      )) || normalized.settings;
   } else {
     settings = normalized.settings;
   }
@@ -760,7 +765,9 @@ export async function updateSiteSettings(payload) {
     heroImageUrl: settings.heroImageUrl,
     heroImages: settings.heroImages,
   };
-  settings = (await SiteSettings.findOneAndUpdate({ key: SITE_SETTINGS_KEY }, { $set: patch }, { new: true })) || settings;
+  settings =
+    (await SiteSettings.findOneAndUpdate({ key: SITE_SETTINGS_KEY }, { $set: patch }, { returnDocument: "after" })) ||
+    settings;
 
   if (removeHeroImageUrl && isManagedUploadUrl(removeHeroImageUrl)) {
     await deleteManagedUpload(removeHeroImageUrl);
@@ -1168,7 +1175,7 @@ export async function deleteBlogById(id) {
 
 export async function incrementBlogLike(slug) {
   await ensureContentSeeded();
-  const blog = await Blog.findOneAndUpdate({ slug }, { $inc: { likesCount: 1 } }, { new: true });
+  const blog = await Blog.findOneAndUpdate({ slug }, { $inc: { likesCount: 1 } }, { returnDocument: "after" });
 
   if (!blog) {
     throw new Error("Blog not found.");
