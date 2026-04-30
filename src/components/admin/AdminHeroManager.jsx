@@ -44,6 +44,7 @@ const AdminHeroManager = ({ initialSiteSettings }) => {
   const [selectedPageKey, setSelectedPageKey] = useState("home");
   const [heroFileUploading, setHeroFileUploading] = useState(false);
   const [heroSaving, setHeroSaving] = useState(false);
+  const [deletingUrl, setDeletingUrl] = useState("");
 
   const currentHero = useMemo(() => {
     const page = (siteSettings?.heroPages || []).find((item) => item.key === selectedPageKey);
@@ -148,6 +149,7 @@ const AdminHeroManager = ({ initialSiteSettings }) => {
       return;
     }
 
+    setDeletingUrl(url);
     try {
       const response = await fetch(
         `/api/admin/site-settings?pageKey=${encodeURIComponent(selectedPageKey)}&heroImageUrl=${encodeURIComponent(url)}`,
@@ -165,6 +167,8 @@ const AdminHeroManager = ({ initialSiteSettings }) => {
       toast.success(t("admin.siteSettings.hero.toast.deleted"));
     } catch (error) {
       toast.error(error.message || t("admin.siteSettings.hero.error.delete"));
+    } finally {
+      setDeletingUrl("");
     }
   };
 
@@ -345,9 +349,9 @@ const AdminHeroManager = ({ initialSiteSettings }) => {
                       size="sm"
                       variant="destructive"
                       onClick={() => handleDeleteHeroImage(url)}
-                      disabled={heroFileUploading || heroSaving}
+                      disabled={heroFileUploading || heroSaving || deletingUrl === url}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      {deletingUrl === url ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                     </Button>
                   </div>
                 </div>

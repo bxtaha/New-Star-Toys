@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -16,6 +16,7 @@ const AdminProductsManager = ({ initialProducts }) => {
   const [products, setProducts] = useState(initialProducts);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [deletingProductId, setDeletingProductId] = useState("");
 
   const filteredProducts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -57,6 +58,7 @@ const AdminProductsManager = ({ initialProducts }) => {
       return;
     }
 
+    setDeletingProductId(productId);
     try {
       const response = await fetch(`/api/admin/products/${productId}`, {
         method: "DELETE",
@@ -71,6 +73,8 @@ const AdminProductsManager = ({ initialProducts }) => {
       toast.success(t("admin.products.toast.deleted"));
     } catch (error) {
       toast.error(error.message || t("admin.products.error.delete"));
+    } finally {
+      setDeletingProductId("");
     }
   };
 
@@ -157,8 +161,17 @@ const AdminProductsManager = ({ initialProducts }) => {
                     {t("admin.dashboard.action.edit")}
                   </Link>
                 </Button>
-                <Button variant="destructive" size="sm" onClick={() => handleDeleteProduct(product.id)}>
-                  <Trash2 className="h-4 w-4" />
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  disabled={deletingProductId === product.id}
+                  onClick={() => handleDeleteProduct(product.id)}
+                >
+                  {deletingProductId === product.id ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
                 </Button>
               </div>
             </div>

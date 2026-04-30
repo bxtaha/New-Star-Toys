@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useI18n } from "@/components/I18nProvider";
+import { OverlayLoader } from "@/components/Loader";
 
 const PAGE_SIZE = 60;
 
@@ -172,7 +173,8 @@ const AdminMediaManager = ({ initialMedia, initialPagination, initialSummary }) 
         </Button>
       </div>
 
-      <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+      <div className="relative rounded-3xl border border-border bg-card p-6 shadow-sm">
+        {loading ? <OverlayLoader /> : null}
         <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h3 className="text-xl font-heading font-semibold text-foreground">{t("admin.media.listTitle")}</h3>
@@ -269,4 +271,3 @@ const AdminMediaManager = ({ initialMedia, initialPagination, initialSummary }) 
 };
 
 export default AdminMediaManager;
-

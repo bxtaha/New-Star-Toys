@@ -22,6 +22,7 @@ import Footer from "@/components/Footer";
 import ServicesSection from "@/components/ServicesSection";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { OverlayLoader } from "@/components/Loader";
 import { useHeroSettings } from "@/lib/client/hero";
 import { useI18n } from "@/components/I18nProvider";
 import heroPlush from "@/assets/services-hero.jpg";
@@ -85,6 +86,7 @@ export default function ServicesPage() {
               sizes="100vw"
               className="h-full w-full object-cover"
             />
+            {!hero.loaded ? <OverlayLoader /> : null}
             <div className="absolute inset-0 bg-primary/70" />
             <div className="relative container flex h-full flex-col justify-center text-primary-foreground">
               <motion.span

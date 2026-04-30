@@ -14,7 +14,7 @@ const bodyFont = Open_Sans({
 });
 
 export const metadata = {
-  title: "YCNST - OEM/ODM Plush Toy Manufacturing",
+  title: "New Star Toys",
   description: "Premium custom plush toys manufactured with care for global brands.",
 };
 

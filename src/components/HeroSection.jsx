@@ -11,12 +11,14 @@ import heroImg from "@/assets/hero-plush.png";
 const DEFAULT_TITLE = "Your Trusted OEM/ODM Plush Toy Partner";
 const DEFAULT_SUBTITLE =
   "Premium custom plush toys manufactured with care. Serving top brands across Canada, USA & Europe with unmatched quality and craftsmanship.";
+const DEFAULT_TITLE_ZH = "您可信赖的 OEM/ODM 毛绒玩具合作伙伴";
+const DEFAULT_SUBTITLE_ZH = "用心制造高品质定制毛绒玩具，为加拿大、美国及欧洲的知名品牌提供卓越品质与精湛工艺。";
 
 const HeroSection = ({ heroImageUrl, heroTitle, heroSubtitle }) => {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const imageSource = heroImageUrl || heroImg;
-  const title = heroTitle || DEFAULT_TITLE;
-  const subtitle = heroSubtitle || DEFAULT_SUBTITLE;
+  const title = heroTitle || (language === "zh" ? DEFAULT_TITLE_ZH : DEFAULT_TITLE);
+  const subtitle = heroSubtitle || (language === "zh" ? DEFAULT_SUBTITLE_ZH : DEFAULT_SUBTITLE);
 
   return (
     <section id="home" className="relative min-h-screen flex items-center overflow-hidden">

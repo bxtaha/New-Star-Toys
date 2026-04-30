@@ -10,6 +10,7 @@ import {
   Clock,
   Facebook,
   Heart,
+  Loader2,
   Linkedin,
   MessageCircle,
   Send,
@@ -239,7 +240,11 @@ const BlogDetailPage = ({ post, relatedPosts = [] }) => {
                   disabled={liked || likeSubmitting}
                   className={`flex items-center gap-2 text-sm font-medium transition-colors ${liked ? "text-red-500" : "text-muted-foreground hover:text-red-500"}`}
                 >
-                  <Heart className={`h-5 w-5 ${liked ? "fill-red-500" : ""}`} />
+                  {likeSubmitting ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <Heart className={`h-5 w-5 ${liked ? "fill-red-500" : ""}`} />
+                  )}
                   {t("blog.likes", { count: likeCount })}
                 </button>
 
@@ -362,7 +367,8 @@ const BlogDetailPage = ({ post, relatedPosts = [] }) => {
                   className="mb-4"
                 />
                 <Button onClick={handleComment} className="gap-2" disabled={commentSubmitting}>
-                  <Send className="h-4 w-4" /> {t("blog.postComment")}
+                  {commentSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}{" "}
+                  {t("blog.postComment")}
                 </Button>
               </div>
             </div>

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { OverlayLoader } from "@/components/Loader";
 import { useHeroSettings } from "@/lib/client/hero";
 import { useI18n } from "@/components/I18nProvider";
 import { useRouter } from "next/navigation";
@@ -128,6 +129,7 @@ const CollectionPage = ({ products = [], categories = [], initialCategorySlug = 
           sizes="100vw"
           className="h-full w-full object-cover"
         />
+        {!hero.loaded ? <OverlayLoader /> : null}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-8 md:p-16">
           <div className="container">

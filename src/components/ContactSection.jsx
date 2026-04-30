@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import { Clock, Loader2, Mail, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -111,7 +111,14 @@ const ContactSection = () => {
               />
             </div>
             <Button type="submit" size="lg" className="w-full text-base font-semibold" disabled={submitting}>
-              {submitting ? t("home.contact.sending") : t("home.contact.submit")}
+              {submitting ? (
+                <span className="inline-flex items-center justify-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>{t("home.contact.sending")}</span>
+                </span>
+              ) : (
+                t("home.contact.submit")
+              )}
             </Button>
             <p className="text-xs text-muted-foreground text-center">
               {t("home.contact.confidential")}

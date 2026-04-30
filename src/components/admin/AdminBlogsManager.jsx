@@ -22,6 +22,7 @@ const AdminBlogsManager = ({ initialBlogs }) => {
   const [replySubmittingId, setReplySubmittingId] = useState("");
   const [deletingCommentId, setDeletingCommentId] = useState("");
   const [deletingReplyId, setDeletingReplyId] = useState("");
+  const [deletingBlogId, setDeletingBlogId] = useState("");
 
   const filteredBlogs = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -62,6 +63,7 @@ const AdminBlogsManager = ({ initialBlogs }) => {
       return;
     }
 
+    setDeletingBlogId(blogId);
     try {
       const response = await fetch(`/api/admin/blogs/${blogId}`, {
         method: "DELETE",
@@ -76,6 +78,8 @@ const AdminBlogsManager = ({ initialBlogs }) => {
       toast.success(t("admin.blogs.toast.deleted"));
     } catch (error) {
       toast.error(error.message || t("admin.blogs.error.delete"));
+    } finally {
+      setDeletingBlogId("");
     }
   };
 
@@ -299,8 +303,17 @@ const AdminBlogsManager = ({ initialBlogs }) => {
                         {t("admin.dashboard.action.edit")}
                       </Link>
                     </Button>
-                    <Button variant="destructive" size="sm" onClick={() => handleDeleteBlog(blog.id)}>
-                      <Trash2 className="h-4 w-4" />
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      disabled={deletingBlogId === blog.id}
+                      onClick={() => handleDeleteBlog(blog.id)}
+                    >
+                      {deletingBlogId === blog.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
                     </Button>
                   </div>
                 </div>

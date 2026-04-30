@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useI18n } from "@/components/I18nProvider";
 import { toast } from "sonner";
+import { OverlayLoader } from "@/components/Loader";
 
 const PAGE_SIZE = 20;
 
@@ -153,7 +154,8 @@ const AdminInquiriesManager = ({ initialInquiries, initialPagination }) => {
         </Button>
       </div>
 
-      <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+      <div className="relative rounded-3xl border border-border bg-card p-6 shadow-sm">
+        {loading ? <OverlayLoader /> : null}
         <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <h3 className="text-xl font-heading font-semibold text-foreground">{t("admin.inquiries.listTitle")}</h3>
           <p className="text-sm text-muted-foreground">

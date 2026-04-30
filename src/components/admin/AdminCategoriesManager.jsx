@@ -18,6 +18,8 @@ const AdminCategoriesManager = ({ initialCategories }) => {
   const [categoryForm, setCategoryForm] = useState(emptyCategoryForm);
   const [editingCategoryId, setEditingCategoryId] = useState(null);
   const [categorySubmitting, setCategorySubmitting] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [deletingCategoryId, setDeletingCategoryId] = useState("");
 
   const resetCategoryForm = () => {
     setCategoryForm(emptyCategoryForm);
@@ -25,14 +27,19 @@ const AdminCategoriesManager = ({ initialCategories }) => {
   };
 
   const refreshCategories = async () => {
-    const response = await fetch("/api/admin/categories");
-    const data = await response.json();
+    setRefreshing(true);
+    try {
+      const response = await fetch("/api/admin/categories");
+      const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.error || t("admin.dashboard.error.loadCategories"));
+      if (!response.ok) {
+        throw new Error(data.error || t("admin.dashboard.error.loadCategories"));
+      }
+
+      setCategories(data.categories);
+    } finally {
+      setRefreshing(false);
     }
-
-    setCategories(data.categories);
   };
 
   const handleCategorySubmit = async (event) => {
@@ -73,6 +80,7 @@ const AdminCategoriesManager = ({ initialCategories }) => {
       return;
     }
 
+    setDeletingCategoryId(categoryId);
     try {
       const response = await fetch(`/api/admin/categories/${categoryId}`, {
         method: "DELETE",
@@ -90,6 +98,8 @@ const AdminCategoriesManager = ({ initialCategories }) => {
       toast.success(t("admin.dashboard.toast.categoryDeleted"));
     } catch (error) {
       toast.error(error.message || t("admin.dashboard.error.deleteCategory"));
+    } finally {
+      setDeletingCategoryId("");
     }
   };
 
@@ -118,6 +128,7 @@ const AdminCategoriesManager = ({ initialCategories }) => {
                   <Button
                     variant="outline"
                     size="sm"
+                    disabled={refreshing || deletingCategoryId === category.id}
                     onClick={() => {
                       setEditingCategoryId(category.id);
                       setCategoryForm({ name: normalizeLocalizedString(category.name) });
@@ -126,8 +137,17 @@ const AdminCategoriesManager = ({ initialCategories }) => {
                     <Pencil className="h-4 w-4" />
                     {t("admin.dashboard.action.edit")}
                   </Button>
-                  <Button variant="destructive" size="sm" onClick={() => handleDeleteCategory(category.id)}>
-                    <Trash2 className="h-4 w-4" />
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    disabled={refreshing || deletingCategoryId === category.id}
+                    onClick={() => handleDeleteCategory(category.id)}
+                  >
+                    {deletingCategoryId === category.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-4 w-4" />
+                    )}
                     {t("admin.dashboard.action.delete")}
                   </Button>
                 </div>

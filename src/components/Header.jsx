@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Loader2, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import SmartImage from "@/components/SmartImage";
@@ -23,6 +23,8 @@ const Header = () => {
   const [hash, setHash] = useState("");
   const { language, setLanguage, t } = useI18n();
   const [collectionCategories, setCollectionCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [categoriesError, setCategoriesError] = useState(false);
 
   useEffect(() => {
     const updateHash = () => setHash(window.location.hash || "");
@@ -34,18 +36,26 @@ const Header = () => {
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      setCategoriesLoading(true);
+      setCategoriesError(false);
       try {
         const response = await fetch("/api/categories");
         const data = await response.json();
         if (!response.ok) {
-          return;
+          throw new Error("Unable to load categories.");
         }
         if (cancelled) {
           return;
         }
         setCollectionCategories(Array.isArray(data.categories) ? data.categories : []);
       } catch {
-        return;
+        if (!cancelled) {
+          setCategoriesError(true);
+        }
+      } finally {
+        if (!cancelled) {
+          setCategoriesLoading(false);
+        }
       }
     })();
     return () => {
@@ -137,15 +147,24 @@ const Header = () => {
                     >
                       {t("common.all")}
                     </Link>
-                    {collectionCategories.map((category) => (
-                      <Link
-                        key={category.slug || category.key}
-                        href={`/collection?category=${encodeURIComponent(category.slug)}`}
-                        className="block px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-                      >
-                        {categoryLabel(category)}
-                      </Link>
-                    ))}
+                    {categoriesLoading ? (
+                      <div className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>Loading</span>
+                      </div>
+                    ) : categoriesError ? (
+                      <div className="px-4 py-2 text-sm text-muted-foreground">Unable to load</div>
+                    ) : (
+                      collectionCategories.map((category) => (
+                        <Link
+                          key={category.slug || category.key}
+                          href={`/collection?category=${encodeURIComponent(category.slug)}`}
+                          className="block px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                        >
+                          {categoryLabel(category)}
+                        </Link>
+                      ))
+                    )}
                   </div>
                 </div>
               </div>
@@ -225,16 +244,25 @@ const Header = () => {
                       >
                         {t("common.all")}
                       </Link>
-                      {collectionCategories.map((category) => (
-                        <Link
-                          key={category.slug || category.key}
-                          href={`/collection?category=${encodeURIComponent(category.slug)}`}
-                          className="block px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-                          onClick={() => setMobileOpen(false)}
-                        >
-                          {categoryLabel(category)}
-                        </Link>
-                      ))}
+                      {categoriesLoading ? (
+                        <div className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <span>Loading</span>
+                        </div>
+                      ) : categoriesError ? (
+                        <div className="px-4 py-2 text-sm text-muted-foreground">Unable to load</div>
+                      ) : (
+                        collectionCategories.map((category) => (
+                          <Link
+                            key={category.slug || category.key}
+                            href={`/collection?category=${encodeURIComponent(category.slug)}`}
+                            className="block px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                            onClick={() => setMobileOpen(false)}
+                          >
+                            {categoryLabel(category)}
+                          </Link>
+                        ))
+                      )}
                     </div>
                   </div>
                 </div>

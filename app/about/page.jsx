@@ -30,6 +30,7 @@ import AboutSection from "@/components/AboutSection";
 import QualitySection from "@/components/QualitySection";
 import VideoSection from "@/components/VideoSection";
 import { Button } from "@/components/ui/button";
+import { OverlayLoader } from "@/components/Loader";
 import { useHeroSettings } from "@/lib/client/hero";
 import { useI18n } from "@/components/I18nProvider";
 import factoryImg from "@/assets/about-hero.jpg";
@@ -103,6 +104,7 @@ export default function AboutPage() {
               sizes="100vw"
               className="h-full w-full object-cover"
             />
+            {!hero.loaded ? <OverlayLoader /> : null}
             <div className="absolute inset-0 bg-primary/70" />
             <div className="relative container flex h-full flex-col justify-center text-primary-foreground">
               <motion.span
