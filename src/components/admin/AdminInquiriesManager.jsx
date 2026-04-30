@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Loader2, Mail, Search, Send } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Mail, Search, Send, Trash2 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useI18n } from "@/components/I18nProvider";
 import { toast } from "sonner";
 import { OverlayLoader } from "@/components/Loader";
+import SmartImage from "@/components/SmartImage";
+import Link from "next/link";
 
 const PAGE_SIZE = 20;
 
@@ -32,6 +34,7 @@ const AdminInquiriesManager = ({ initialInquiries, initialPagination }) => {
   const [replyDrafts, setReplyDrafts] = useState({});
   const [replySubjects, setReplySubjects] = useState({});
   const [sendingId, setSendingId] = useState("");
+  const [deletingId, setDeletingId] = useState("");
 
   const defaultSubject = useMemo(() => t("admin.inquiries.reply.defaultSubject"), [t]);
 
@@ -119,6 +122,30 @@ const AdminInquiriesManager = ({ initialInquiries, initialPagination }) => {
     }
   };
 
+  const handleDeleteInquiry = async (inquiryId) => {
+    const shouldDelete = window.confirm(t("admin.inquiries.confirmDelete"));
+    if (!shouldDelete) {
+      return;
+    }
+
+    setDeletingId(inquiryId);
+    try {
+      const response = await fetch(`/api/admin/inquiries/${inquiryId}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || t("admin.inquiries.error.delete"));
+      }
+      toast.success(t("admin.inquiries.toast.deleted"));
+      await fetchPage(pagination?.page || 1);
+    } catch (error) {
+      toast.error(error.message || t("admin.inquiries.error.delete"));
+    } finally {
+      setDeletingId("");
+    }
+  };
+
   const currentPage = pagination?.page || 1;
   const totalPages = pagination?.totalPages || 1;
 
@@ -194,6 +221,11 @@ const AdminInquiriesManager = ({ initialInquiries, initialPagination }) => {
                               {inquiry.company}
                             </span>
                           ) : null}
+                          {inquiry.productTitle ? (
+                            <span className="rounded-full bg-secondary/30 px-2.5 py-1 text-xs font-semibold text-foreground">
+                              {inquiry.productTitle}
+                            </span>
+                          ) : null}
                         </div>
                         <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                           <span>{formatDate(inquiry.createdAt)}</span>
@@ -216,6 +248,47 @@ const AdminInquiriesManager = ({ initialInquiries, initialPagination }) => {
                       <div className="rounded-2xl border border-border bg-background p-5">
                         <h4 className="text-sm font-semibold text-foreground">{t("admin.inquiries.details")}</h4>
                         <div className="mt-4 space-y-3 text-sm">
+                          {inquiry.productTitle || inquiry.productSlug ? (
+                            <div className="rounded-xl border border-border bg-card p-4">
+                              <div className="flex items-start gap-4">
+                                <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-muted/40">
+                                  <SmartImage
+                                    src={inquiry.productImage || "/placeholder.svg"}
+                                    alt={inquiry.productTitle || inquiry.productSlug || "Product"}
+                                    fill
+                                    sizes="64px"
+                                    className="object-cover"
+                                  />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-sm font-semibold text-foreground">
+                                    {inquiry.productTitle || inquiry.productSlug}
+                                  </p>
+                                  <div className="mt-1 space-y-1 text-xs text-muted-foreground">
+                                    {inquiry.productSlug ? (
+                                      <p className="truncate">
+                                        {t("admin.inquiries.field.productSlug")}:{" "}
+                                        <span className="text-foreground">{inquiry.productSlug}</span>
+                                      </p>
+                                    ) : null}
+                                    {inquiry.productVariantSlug ? (
+                                      <p className="truncate">
+                                        {t("admin.inquiries.field.productVariant")}:{" "}
+                                        <span className="text-foreground">{inquiry.productVariantSlug}</span>
+                                      </p>
+                                    ) : null}
+                                  </div>
+                                </div>
+                                {inquiry.productVariantSlug || inquiry.productSlug ? (
+                                  <Button variant="outline" size="sm" asChild>
+                                    <Link href={`/product/${encodeURIComponent(inquiry.productVariantSlug || inquiry.productSlug)}`}>
+                                      {t("admin.inquiries.viewProduct")}
+                                    </Link>
+                                  </Button>
+                                ) : null}
+                              </div>
+                            </div>
+                          ) : null}
                           <div className="flex items-center justify-between gap-3">
                             <span className="text-muted-foreground">{t("admin.inquiries.field.name")}</span>
                             <span className="font-medium text-foreground">{inquiry.name}</span>
@@ -261,6 +334,16 @@ const AdminInquiriesManager = ({ initialInquiries, initialPagination }) => {
                             disabled={inquiry.status === "archived"}
                           >
                             {t("admin.inquiries.action.archive")}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeleteInquiry(inquiry.id)}
+                            disabled={deletingId === inquiry.id}
+                          >
+                            {deletingId === inquiry.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                            {t("admin.inquiries.action.delete")}
                           </Button>
                         </div>
                       </div>

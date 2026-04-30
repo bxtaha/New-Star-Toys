@@ -248,7 +248,7 @@ const CollectionPage = ({ products = [], categories = [], initialCategorySlug = 
                           <Link href={`/product/${product.slug}`}>{t("collection.detail")}</Link>
                         </Button>
                         <Button size="sm" className="flex-1" asChild>
-                          <Link href="/#contact">{t("collection.inquiry")}</Link>
+                          <Link href={`/inquiry/${encodeURIComponent(product.slug)}`}>{t("collection.inquiry")}</Link>
                         </Button>
                       </div>
                     </div>

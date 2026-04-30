@@ -230,7 +230,7 @@ const ProductDetailPage = ({ product }) => {
               </div>
 
               <Link
-                href="/#contact"
+                href={`/inquiry/${encodeURIComponent(activeVariantSlug || product?.slug || "")}`}
                 className="inline-block mt-8 px-8 py-3 bg-accent text-accent-foreground rounded-lg font-semibold hover:opacity-90 transition-opacity"
               >
                 {t("product.requestQuote")}

@@ -14,6 +14,11 @@ function normalizeEmail(value) {
 function serializeInquiry(inquiry) {
   return {
     id: inquiry._id.toString(),
+    productId: inquiry.productId || "",
+    productSlug: inquiry.productSlug || "",
+    productVariantSlug: inquiry.productVariantSlug || "",
+    productTitle: inquiry.productTitle || "",
+    productImage: inquiry.productImage || "",
     name: inquiry.name,
     email: inquiry.email,
     company: inquiry.company || "",
@@ -42,6 +47,11 @@ function serializeInquiry(inquiry) {
 export async function createInquiry(payload, requestMeta = {}) {
   await connectToDatabase();
 
+  const productId = trimValue(payload?.productId);
+  const productSlug = trimValue(payload?.productSlug);
+  const productVariantSlug = trimValue(payload?.productVariantSlug);
+  const productTitle = trimValue(payload?.productTitle);
+  const productImage = trimValue(payload?.productImage);
   const name = trimValue(payload?.name);
   const email = normalizeEmail(payload?.email);
   const company = trimValue(payload?.company);
@@ -60,6 +70,11 @@ export async function createInquiry(payload, requestMeta = {}) {
   }
 
   const inquiry = await Inquiry.create({
+    productId,
+    productSlug,
+    productVariantSlug,
+    productTitle,
+    productImage,
     name,
     email,
     company,
@@ -87,6 +102,9 @@ export async function listInquiriesForAdmin({ page = 1, pageSize = 20, query = "
 
   if (q) {
     filter.$or = [
+      { productTitle: { $regex: q, $options: "i" } },
+      { productSlug: { $regex: q, $options: "i" } },
+      { productVariantSlug: { $regex: q, $options: "i" } },
       { name: { $regex: q, $options: "i" } },
       { email: { $regex: q, $options: "i" } },
       { company: { $regex: q, $options: "i" } },
@@ -183,3 +201,11 @@ export async function updateInquiryStatus({ inquiryId, status }) {
   return { inquiry: serializeInquiry(inquiry) };
 }
 
+export async function deleteInquiryForAdmin(inquiryId) {
+  await connectToDatabase();
+  const inquiry = await Inquiry.findByIdAndDelete(inquiryId);
+  if (!inquiry) {
+    throw new Error("Inquiry not found.");
+  }
+  return { success: true };
+}

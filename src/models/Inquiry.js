@@ -54,6 +54,36 @@ const InquiryReplySchema = new mongoose.Schema(
 
 const InquirySchema = new mongoose.Schema(
   {
+    productId: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: 60,
+    },
+    productSlug: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: 200,
+    },
+    productVariantSlug: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: 200,
+    },
+    productTitle: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: 300,
+    },
+    productImage: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: 2000,
+    },
     name: {
       type: String,
       required: true,
@@ -111,6 +141,6 @@ const InquirySchema = new mongoose.Schema(
 InquirySchema.index({ createdAt: -1 });
 InquirySchema.index({ status: 1, createdAt: -1 });
 InquirySchema.index({ email: 1, createdAt: -1 });
+InquirySchema.index({ productSlug: 1, createdAt: -1 });
 
 export const Inquiry = mongoose.models.Inquiry || mongoose.model("Inquiry", InquirySchema);
-
