@@ -1,6 +1,7 @@
 "use client";
 
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
+import { Facebook, Linkedin } from "lucide-react";
 import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
 import { useI18n } from "@/components/I18nProvider";
@@ -42,17 +43,26 @@ const Footer = () => {
               </p>
               <div className="flex gap-3">
                 {[
-                  { icon: "Y", label: "youtube" },
-                  { icon: "f", label: "facebook" },
-                  { icon: "in", label: "linkedin" },
+                  {
+                    icon: Facebook,
+                    label: "facebook",
+                    href: "https://www.facebook.com/share/1H5bZEgocg/?mibextid=wwXIfr",
+                  },
+                  {
+                    icon: Linkedin,
+                    label: "linkedin",
+                    href: "https://www.linkedin.com/company/yancheng-new-star-toys-fashion-co-ltd/",
+                  },
                 ].map((social) => (
                   <a
                     key={social.label}
-                    href="#"
+                    href={social.href}
+                    target="_blank"
+                    rel="noreferrer"
                     className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-900 text-white transition-colors hover:bg-gray-700"
                     aria-label={social.label}
                   >
-                    <span className="text-xs font-bold">{social.icon}</span>
+                    <social.icon className="h-4 w-4" />
                   </a>
                 ))}
               </div>
